@@ -51,7 +51,8 @@ abstract class BaseController extends Controller
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
-        $this->content = json_decode(file_get_contents('php://input'), true);
+        $content = @file_get_contents('php://input');
+        $this->content = $content === FALSE ? '' : json_decode($content, true);
 
         // Preload any models, libraries, etc, here.
 
