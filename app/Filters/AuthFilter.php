@@ -28,7 +28,7 @@ class AuthFilter implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        $key = getenv('JWT_SECRET');
+        $key = $_ENV('JWT_SECRET');
         $header = $request->getHeader("Authorization");
         $token = null;
 
@@ -40,7 +40,7 @@ class AuthFilter implements FilterInterface
         }
 
         // check if token is null or empty
-        if (is_null($token) || empty($token)) {
+        if ($token === null) {
             $response = service('response');
             $response->setBody('Access denied');
             $response->setStatusCode(401);
