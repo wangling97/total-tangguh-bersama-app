@@ -37,6 +37,25 @@ $routes->set404Override();
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 
+// API
+$routes->group('api', function ($routes) {
+    $routes->group('provinsi', function ($routes) {
+        $routes->get('/', 'Api\ApiProvinsi::index');
+    });
+
+    $routes->group('kabupaten', function ($routes) {
+        $routes->get('/', 'Api\ApiKabupaten::index');
+    });
+
+    $routes->group('kecamatan', function ($routes) {
+        $routes->get('/', 'Api\ApiKecamatan::index');
+    });
+
+    $routes->group('kelurahan', function ($routes) {
+        $routes->get('/', 'Api\ApiKelurahan::index');
+    });
+});
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing
