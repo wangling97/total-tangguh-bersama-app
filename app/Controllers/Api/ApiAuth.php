@@ -41,7 +41,7 @@ class ApiAuth extends BaseController
             return $this->failUnauthorized('Username atau Password Salah.');
         }
 
-        $key = $_ENV('JWT_SECRET');
+        $key = env('JWT_SECRET');
         $iat = time(); // current timestamp value
         $exp = $iat + 3600;
 
