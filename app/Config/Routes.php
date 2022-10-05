@@ -38,8 +38,8 @@ $routes->set404Override();
 $routes->get('/', 'Home::index');
 
 // API
-$routes->group('api', function ($routes) {
-    $routes->group('provinsi', function ($routes) {
+$routes->group('api', ['filter' => 'authFilter'], function ($routes) {
+    $routes->group('provinsi',  function ($routes) {
         $routes->get('/', 'Api\ApiProvinsi::index');
     });
 
@@ -53,6 +53,16 @@ $routes->group('api', function ($routes) {
 
     $routes->group('kelurahan', function ($routes) {
         $routes->get('/', 'Api\ApiKelurahan::index');
+    });
+
+    $routes->group('pengguna', function ($routes) {
+        $routes->post('/', 'Api\ApiPengguna::tambah');
+    });
+});
+
+$routes->group('api', function ($routes) {
+    $routes->group('auth', function ($routes) {
+        $routes->post('login', 'Api\ApiAuth::login');
     });
 });
 
