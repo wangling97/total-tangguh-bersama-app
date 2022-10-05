@@ -16,28 +16,23 @@ class ApiProvinsi extends BaseController
 
     public function index()
     {
-        $id_provinsi = $this->request->getGet('id_provinsi') ?? null;
+        $id_provinsi = $this->request->getGet('id_provinsi');
 
-        $dataProvinsi = array();
+        $builder = $this->ApiProvinsiModel;
 
         if ($id_provinsi) {
-            $dataProvinsi = $this->ApiProvinsiModel
-                ->whereIn('id_provinsi', explode(",", $id_provinsi))
-                ->get()
-                ->getResultArray();
-        } else {
-            $dataProvinsi = $this->ApiProvinsiModel
-                ->get()
-                ->getResultArray();
+            $builder->whereIn('id_provinsi', explode(",", $id_provinsi));
         }
-
-        if ($dataProvinsi) {
-            return $this->respond([
-                'message' => "Data Provinsi Ditemukan.",
-                'data' => $dataProvinsi
-            ], 200);
-        } else {
+        
+        $dataProvinsi = $builder->get()->getResultArray();
+        
+        if (!$dataProvinsi) {
             return $this->failNotFound("Data Provinsi Tidak Ditemukan.");
-        }
+        } 
+
+        return $this->respond([
+            'message' => "Data Provinsi Ditemukan.",
+            'data' => $dataProvinsi
+        ], 200);
     }
 }

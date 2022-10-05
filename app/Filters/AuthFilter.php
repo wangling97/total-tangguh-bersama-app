@@ -5,7 +5,6 @@ namespace App\Filters;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
-use CodeIgniter\HTTP\Header;
 
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
@@ -45,7 +44,7 @@ class AuthFilter implements FilterInterface
             $jwt->decode($token, new Key($key, 'HS256'));
         } catch (\Exception $ex) {
             $response = service('response');
-            $response->setBody('Access denied');
+            $response->setBody($ex->getMessage());
             $response->setStatusCode(401);
             return $response;
         }

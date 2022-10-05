@@ -16,36 +16,28 @@ class ApiKabupaten extends BaseController
 
     public function index()
     {
-        $id_provinsi = $this->request->getGet('id_provinsi') ?? null;
-        $id_kabupaten = $this->request->getGet('id_kabupaten') ?? null;
+        $id_provinsi = $this->request->getGet('id_provinsi');
+        $id_kabupaten = $this->request->getGet('id_kabupaten');
 
-        $dataKabupaten = array();
+        $builder = $this->ApiKabupatenModel;
 
-        if ($id_provinsi || $id_kabupaten) {
-            $builder = $this->ApiKabupatenModel;
-
-            if ($id_provinsi) {
-                $builder->whereIn('id_provinsi', explode(",", $id_provinsi));
-            }
-
-            if ($id_kabupaten) {
-                $builder->whereIn('id_kabupaten', explode(",", $id_kabupaten));
-            }
-
-            $dataKabupaten = $builder->get()->getResultArray();
-        } else {
-            $dataKabupaten = $this->ApiKabupatenModel
-                ->get()
-                ->getResultArray();
+        if ($id_provinsi) {
+            $builder->whereIn('id_provinsi', explode(",", $id_provinsi));
         }
 
-        if ($dataKabupaten) {
-            return $this->respond([
-                'message' => "Data Kabupaten Ditemukan.",
-                'data' => $dataKabupaten
-            ], 200);
-        } else {
+        if ($id_kabupaten) {
+            $builder->whereIn('id_kabupaten', explode(",", $id_kabupaten));
+        }
+
+        $dataKabupaten = $builder->get()->getResultArray();
+
+        if (!$dataKabupaten) {
             return $this->failNotFound("Data Kabupaten Tidak Ditemukan.");
-        }
+        } 
+        
+        return $this->respond([
+            'message' => "Data Kabupaten Ditemukan.",
+            'data' => $dataKabupaten
+        ], 200);
     }
 }

@@ -56,7 +56,10 @@ $routes->group('api', ['filter' => 'authFilter'], function ($routes) {
     });
 
     $routes->group('pengguna', function ($routes) {
+        $routes->get('/', 'Api\ApiPengguna::index');
         $routes->post('/', 'Api\ApiPengguna::tambah');
+        $routes->put('/', 'Api\ApiPengguna::ubah');
+        $routes->delete('/', 'Api\ApiPengguna::hapus');
     });
 });
 

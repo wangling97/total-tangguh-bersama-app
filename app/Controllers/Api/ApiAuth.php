@@ -17,27 +17,28 @@ class ApiAuth extends BaseController
     
     public function login()
     {
-        $username = $this->request->getVar('username') ?? null;
-        $password = $this->request->getVar('password') ?? null;
+        $jsonData = [
+            'username' => $this->request->getVar('username'),
+            'password' => $this->request->getVar('password'),
+        ];
 
-        // Required Validation
-        if (!$username) {
-            return $this->failValidationErrors("Username Tidak Boleh Kosong.");
-        }
+        $this->validation->setRule('username', 'Username', 'required');
+        $this->validation->setRule('password', 'Password', 'required');
+        $this->validation->run($jsonData);
 
-        if (!$password) {
-            return $this->failValidationErrors("Password Tidak Boleh Kosong.");
-        }
+        if($this->validation->getErrors()) {
+            return $this->failValidationErrors($this->validation->getErrors());
+        }   
 
         $dataPengguna = $this->ApiPenggunaModel
-            ->where('username', $username)
+            ->where('username', $jsonData['username'])
             ->first();
 
         if (!$dataPengguna) {
             return $this->failUnauthorized('Username atau Password Salah.');
         }
 
-        if (!password_verify($password, $dataPengguna['password'])) {
+        if (!password_verify($jsonData['password'], $dataPengguna['password'])) {
             return $this->failUnauthorized('Username atau Password Salah.');
         }
 
@@ -48,21 +49,22 @@ class ApiAuth extends BaseController
         unset($dataPengguna['password']);
 
         $payload = array(
-            "iss" => "Issuer of the JWT",
-            "aud" => "Audience that the JWT",
-            "sub" => "Subject of the JWT",
-            "iat" => $iat, //Time the JWT issued at
+            "iat" => $iat, // Time the JWT issued at
             "exp" => $exp, // Expiration time of token
             "pengguna" => $dataPengguna,
         );
 
-        $token = JWT::encode($payload, $key, 'HS256');
- 
-        $response = [
-            'message' => 'Login Succesful',
-            'token' => $token
-        ];
-         
-        return $this->respond($response, 200);
+        try {
+            $token = JWT::encode($payload, $key, 'HS256');
+
+            $response = [
+                'message' => 'Login Berhasil.',
+                'token' => $token
+            ];
+             
+            return $this->respond($response, 200);
+        } catch (\Exception $ex) {
+            $this->fail($ex->getMessage());
+        }
     }
 }
