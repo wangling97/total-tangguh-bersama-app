@@ -17,8 +17,8 @@ class ApiAuth extends BaseController
     
     public function login()
     {
-        $username = $this->content['username'] ?? null;
-        $password = $this->content['password'] ?? null;
+        $username = $this->request->getVar('username') ?? null;
+        $password = $this->request->getVar('password') ?? null;
 
         // Required Validation
         if (!$username) {
