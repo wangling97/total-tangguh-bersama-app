@@ -16,8 +16,8 @@ class ApiKecamatan extends BaseController
 
     public function index()
     {
-        $id_kabupaten = $this->request->getGet('id_kabupaten') ?? null;
-        $id_kecamatan = $this->request->getGet('id_kecamatan') ?? null;
+        $id_kabupaten = $this->request->getGet('id_kabupaten');
+        $id_kecamatan = $this->request->getGet('id_kecamatan');
 
         $dataKecamatan = array();
 

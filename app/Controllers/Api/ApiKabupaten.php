@@ -16,8 +16,8 @@ class ApiKabupaten extends BaseController
 
     public function index()
     {
-        $id_provinsi = $this->request->getGet('id_provinsi') ?? null;
-        $id_kabupaten = $this->request->getGet('id_kabupaten') ?? null;
+        $id_provinsi = $this->request->getGet('id_provinsi');
+        $id_kabupaten = $this->request->getGet('id_kabupaten');
 
         $dataKabupaten = array();
 

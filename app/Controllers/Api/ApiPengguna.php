@@ -14,32 +14,63 @@ class ApiPengguna extends BaseController
         $this->ApiPenggunaModel = new ApiPenggunaModel();
     }
 
+    public function index()
+    {
+        $id_pengguna = $this->request->getGet('id_pengguna') ?? null;
+
+        $dataPengguna = array();
+
+        if ($id_pengguna) {
+            $dataPengguna = $this->ApiPenggunaModel
+                ->whereIn('id_pengguna', explode(",", $id_pengguna))
+                ->get()
+                ->getResultArray();
+        } else {
+            $dataPengguna = $this->ApiPenggunaModel
+                ->get()
+                ->getResultArray();
+        }
+
+        if ($dataPengguna) {
+            return $this->respond([
+                'message' => "Data Pengguna Ditemukan.",
+                'data' => $dataPengguna
+            ], 200);
+        } else {
+            return $this->failNotFound("Data Pengguna Tidak Ditemukan.");
+        }
+    }
+
     public function tambah()
     {
-        $namaDepan = $this->request->getVar('nama_depan') ?? null;
-        $namaBelakang = $this->request->getVar('nama_belakang') ?? null;
-        $nomorTelepon = $this->request->getVar('nomor_telepon') ?? null;
-        $username = $this->request->getVar('username') ?? null;
-        $email = $this->request->getVar('email') ?? null;
-        $password = $this->request->getVar('password') ?? null;
-        $jabatan = $this->request->getVar('jabatan') ?? null;
+        $jsonData = [
+            'nama_depan' => $this->request->getVar('nama_depan'),
+            'nama_belakang' => $this->request->getVar('nama_belakang'),
+            'nomor_telepon' => $this->request->getVar('nomor_telepon'),
+            'username' => $this->request->getVar('username'),
+            'email' => $this->request->getVar('email'),
+            'password' => $this->request->getVar('password'),
+            'jabatan' => $this->request->getVar('jabatan')
+        ];
 
-        // Required Validation
-        if (!$namaDepan) {
-            return $this->failValidationErrors("Nama Depan Tidak Boleh Kosong.");
+        $this->validation->setRule('nama_depan', 'Nama Depan', 'required');
+        $this->validation->setRule('username', 'Username', 'required');
+        $this->validation->setRule('password', 'Password', 'required');
+        $this->validation->setRule('jabatan', 'Jabatan', 'in_list[admin,sales]');
+        $this->validation->run($jsonData);
+
+        if($this->validation->getErrors()) {
+            return $this->failValidationErrors($this->validation->getErrors());
         }
 
-        if (!$username) {
-            return $this->failValidationErrors("Username Tidak Boleh Kosong.");
+        if ($jsonData['email']) {
+            if (!filter_var($jsonData['email'], FILTER_VALIDATE_EMAIL)) {
+                return $this->failValidationErrors("Email Tidak Valid.");
+            }
         }
 
-        if (!$password) {
-            return $this->failValidationErrors("Password Tidak Boleh Kosong.");
-        }
-
-        // Validation Input
         $usernameValidation = $this->ApiPenggunaModel
-            ->where('username', $username)
+            ->where('username', $jsonData['username'])
             ->get()
             ->getNumRows();
 
@@ -47,24 +78,48 @@ class ApiPengguna extends BaseController
             return $this->failValidationErrors("Username Sudah Digunakan.");
         }
 
-        if ($email) {
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                return $this->failValidationErrors("Email Tidak Valid.");
-            }
+        $jsonData['password'] = password_hash($jsonData['password'], PASSWORD_DEFAULT);
+
+        $this->db->transBegin();
+
+        $this->ApiPenggunaModel->save($jsonData);
+
+        if ($this->db->transStatus() === false) {
+            $this->db->transRollback();
+            return $this->fail("Gagal tambah data pengguna.");
+        } else {
+            $this->db->transCommit();
+            return $this->respondCreated($jsonData);
+        }
+    }
+
+    public function hapus()
+    {
+        $id_pengguna = $this->request->getVar('id_pengguna') ?? null;
+
+        if (!$id_pengguna) {
+            return $this->fail("Anda tidak bisa melakukan proses ini.", 422);
         }
 
-        $data = [
-            'nama_depan' => $namaDepan,
-            'nama_belakang' => $namaBelakang,
-            'nomor_telepon' => $nomorTelepon,
-            'username' => $username,
-            'email' => $email,
-            'password' => password_hash($password, PASSWORD_DEFAULT),
-            'jabatan' => $jabatan
-        ];
+        $dataPengguna = $this->ApiPenggunaModel
+            ->where('id_pengguna', $id_pengguna)
+            ->get()
+            ->getNumRows();
 
-        $this->ApiPenggunaModel->save($data);
+        if ($dataPengguna < 1) {
+            return $this->fail("Tidak menemukan data pengguna.", 422);
+        }
 
-        return $this->respondCreated($data);
+        $this->db->transBegin();
+
+        $this->ApiPenggunaModel->delete($id_pengguna);
+
+        if ($this->db->transStatus() === false) {
+            $this->db->transRollback();
+            return $this->fail("Gagal menghapus data pengguna.");
+        } else {
+            $this->db->transCommit();
+            return $this->respondDeleted("Berhasil menghapus data pengguna.");
+        }
     }
 }

@@ -16,8 +16,8 @@ class ApiKelurahan extends BaseController
 
     public function index()
     {
-        $id_kelurahan = $this->request->getGet('id_kelurahan') ?? null;
-        $id_kecamatan = $this->request->getGet('id_kecamatan') ?? null;
+        $id_kelurahan = $this->request->getGet('id_kelurahan');
+        $id_kecamatan = $this->request->getGet('id_kecamatan');
 
         $dataKelurahan = array();
 

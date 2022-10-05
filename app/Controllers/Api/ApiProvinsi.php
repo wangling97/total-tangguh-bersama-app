@@ -16,7 +16,7 @@ class ApiProvinsi extends BaseController
 
     public function index()
     {
-        $id_provinsi = $this->request->getGet('id_provinsi') ?? null;
+        $id_provinsi = $this->request->getGet('id_provinsi');
 
         $dataProvinsi = array();
 
