@@ -82,10 +82,10 @@ class ApiPengguna extends BaseController
         if ($this->db->transStatus() === false) {
             $this->db->transRollback();
             return $this->fail("Gagal tambah data pengguna.");
-        } else {
-            $this->db->transCommit();
-            return $this->respondCreated($jsonData);
         }
+
+        $this->db->transCommit();
+        return $this->respondCreated($jsonData);
     }
 
     public function hapus()
@@ -112,9 +112,9 @@ class ApiPengguna extends BaseController
         if ($this->db->transStatus() === false) {
             $this->db->transRollback();
             return $this->fail("Gagal menghapus data pengguna.");
-        } else {
-            $this->db->transCommit();
-            return $this->respondDeleted("Berhasil menghapus data pengguna.");
         }
+        
+        $this->db->transCommit();
+        return $this->respondDeleted("Berhasil menghapus data pengguna.");
     }
 }
