@@ -16,29 +16,24 @@ class ApiPengguna extends BaseController
 
     public function index()
     {
-        $id_pengguna = $this->request->getGet('id_pengguna') ?? null;
+        $id_pengguna = $this->request->getGet('id_pengguna');
 
-        $dataPengguna = array();
+        $builder = $this->ApiPenggunaModel;
 
         if ($id_pengguna) {
-            $dataPengguna = $this->ApiPenggunaModel
-                ->whereIn('id_pengguna', explode(",", $id_pengguna))
-                ->get()
-                ->getResultArray();
-        } else {
-            $dataPengguna = $this->ApiPenggunaModel
-                ->get()
-                ->getResultArray();
+            $builder->whereIn('id_pengguna', explode(",", $id_pengguna));
         }
 
-        if ($dataPengguna) {
-            return $this->respond([
-                'message' => "Data Pengguna Ditemukan.",
-                'data' => $dataPengguna
-            ], 200);
-        } else {
+        $dataPengguna = $builder->get()->getResultArray();
+
+        if (!$dataPengguna) {
             return $this->failNotFound("Data Pengguna Tidak Ditemukan.");
         }
+
+        return $this->respond([
+            'message' => "Data Pengguna Ditemukan.",
+            'data' => $dataPengguna
+        ], 200);
     }
 
     public function tambah()
@@ -59,7 +54,7 @@ class ApiPengguna extends BaseController
         $this->validation->setRule('jabatan', 'Jabatan', 'in_list[admin,sales]');
         $this->validation->run($jsonData);
 
-        if($this->validation->getErrors()) {
+        if ($this->validation->getErrors()) {
             return $this->failValidationErrors($this->validation->getErrors());
         }
 
