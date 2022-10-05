@@ -5,6 +5,7 @@ namespace App\Filters;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
+use CodeIgniter\HTTP\Header;
 
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
@@ -29,15 +30,7 @@ class AuthFilter implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         $key = env('JWT_SECRET');
-        $header = $request->getHeader("Authorization");
-        $token = null;
-
-        // extract the token from the header
-        if (!empty($header)) {
-            if (preg_match('/Bearer\s(\S+)/', $header, $matches)) {
-                $token = $matches[1];
-            }
-        }
+        $token = $request->getServer("HTTP_AUTHORIZATION");
 
         // check if token is null or empty
         if ($token === null) {
