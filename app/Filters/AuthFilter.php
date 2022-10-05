@@ -6,8 +6,8 @@ use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
+use \Firebase\JWT\JWT;
+use \Firebase\JWT\Key;
 
 class AuthFilter implements FilterInterface
 {
@@ -50,7 +50,7 @@ class AuthFilter implements FilterInterface
         try {
             // $decoded = JWT::decode($token, $key, array("HS256"));
             $decoded = JWT::decode($token, new Key($key, 'HS256'));
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             $response = service('response');
             $response->setBody('Access denied');
             $response->setStatusCode(401);

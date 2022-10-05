@@ -16,13 +16,13 @@ class ApiPengguna extends BaseController
 
     public function tambah()
     {
-        $namaDepan = $this->content['nama_depan'] ?? null;
-        $namaBelakang = $this->content['nama_belakang'] ?? null;
-        $nomorTelepon = $this->content['nomor_telepon'] ?? null;
-        $username = $this->content['username'] ?? null;
-        $email = $this->content['email'] ?? null;
-        $password = $this->content['password'] ?? null;
-        $jabatan = $this->content['jabatan'] ?? null;
+        $namaDepan = $this->request->getVar('nama_depan') ?? null;
+        $namaBelakang = $this->request->getVar('nama_belakang') ?? null;
+        $nomorTelepon = $this->request->getVar('nomor_telepon') ?? null;
+        $username = $this->request->getVar('username') ?? null;
+        $email = $this->request->getVar('email') ?? null;
+        $password = $this->request->getVar('password') ?? null;
+        $jabatan = $this->request->getVar('jabatan') ?? null;
 
         // Required Validation
         if (!$namaDepan) {
