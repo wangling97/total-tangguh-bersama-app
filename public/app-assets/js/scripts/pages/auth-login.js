@@ -16,24 +16,36 @@ $(function () {
   // --------------------------------------------------------------------
   if (pageLoginForm.length) {
     pageLoginForm.validate({
-      /*
-      * ? To enable validation onkeyup
-      onkeyup: function (element) {
-        $(element).valid();
-      },*/
-      /*
-      * ? To enable validation on focusout
-      onfocusout: function (element) {
-        $(element).valid();
-      }, */
       rules: {
-        'login-email': {
-          required: true,
-          email: true
+        'login-username': {
+          required: true
         },
         'login-password': {
           required: true
         }
+      },
+      submitHandler: function () {
+        var payload = pageLoginForm.serialize();
+
+        $.ajax({
+          type: 'POST',
+          url: "http://localhost:3000/api/auth/login",
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          data: payload,
+          dataType: 'json',
+          beforeSend: function () {
+            loadingOverlay();
+          },
+          success: function (response) {
+            console.info(response);
+          },
+          error: function (request) {
+            alertMessage('warning', 'Peringatan', request.responseJSON.messages.error);
+          },
+          complete: function () {
+            $.unblockUI();
+          }
+        });
       }
     });
   }

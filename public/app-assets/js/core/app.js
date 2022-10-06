@@ -1087,6 +1087,32 @@ if (typeof jQuery.validator === 'function') {
   });
 }
 
+function alertMessage(type, title, message) {
+  Swal.fire({
+    icon: type,
+    title: title,
+    text: message,
+    customClass: {
+      confirmButton: 'btn btn-primary'
+    },
+    buttonsStyling: false
+  });
+}
+
+function loadingOverlay() {
+  $.blockUI({
+    message: '<div class="d-flex justify-content-center align-items-center"><p class="me-50 mb-0">Please wait...</p> <div class="spinner-grow spinner-grow-sm text-white" role="status"></div> </div>',
+    css: {
+      backgroundColor: 'transparent',
+      color: '#fff',
+      border: '0'
+    },
+    overlayCSS: {
+      opacity: 0.5
+    }
+  });
+}
+
 // Add validation class to input-group (input group validation fix, currently disabled but will be useful in future)
 /* function inputGroupValidation(el) {
   var validEl,
