@@ -55,7 +55,8 @@ class ApiAuth extends BaseController
         );
 
         try {
-            $token = JWT::encode($payload, $key, 'HS256');
+            $jwt = new JWT();
+            $token = $jwt->encode($payload, $key, 'HS256');
 
             $response = [
                 'message' => 'Login Berhasil.',

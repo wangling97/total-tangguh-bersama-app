@@ -88,9 +88,49 @@ class ApiPengguna extends BaseController
         return $this->respondCreated($jsonData);
     }
 
+    public function ubah()
+    {
+        $id_pengguna = $this->request->getVar('id_pengguna');
+
+        $jsonData = [
+            'nama_depan' => $this->request->getVar('nama_depan'),
+            'nama_belakang' => $this->request->getVar('nama_belakang'),
+            'nomor_telepon' => $this->request->getVar('nomor_telepon'),
+            'email' => $this->request->getVar('email')
+        ];
+
+        $this->validation->setRule('nama_depan', 'Nama Depan', 'required');
+        $this->validation->run($jsonData);
+
+        if ($this->validation->getErrors()) {
+            return $this->failValidationErrors($this->validation->getErrors());
+        }
+
+        if ($jsonData['email']) {
+            if (!filter_var($jsonData['email'], FILTER_VALIDATE_EMAIL)) {
+                return $this->failValidationErrors("Email Tidak Valid.");
+            }
+        }
+
+        $this->db->transBegin();
+
+        $this->ApiPenggunaModel->update($id_pengguna, array_filter($jsonData));
+
+        if ($this->db->transStatus() === false) {
+            $this->db->transRollback();
+            return $this->fail("Gagal ubah data pengguna.");
+        }
+
+        $this->db->transCommit();
+        return $this->respond([
+            'message' => "Berhasil ubah data pengguna.",
+            'data' => $jsonData
+        ], 200);
+    }
+
     public function hapus()
     {
-        $id_pengguna = $this->request->getVar('id_pengguna') ?? null;
+        $id_pengguna = $this->request->getVar('id_pengguna');
 
         if (!$id_pengguna) {
             return $this->fail("Anda tidak bisa melakukan proses ini.", 422);
@@ -113,7 +153,7 @@ class ApiPengguna extends BaseController
             $this->db->transRollback();
             return $this->fail("Gagal menghapus data pengguna.");
         }
-        
+
         $this->db->transCommit();
         return $this->respondDeleted("Berhasil menghapus data pengguna.");
     }
