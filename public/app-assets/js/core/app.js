@@ -29,6 +29,7 @@ window.colors = {
     dark: '#4b4b4b1a'
   }
 };
+
 (function (window, document, $) {
   'use strict';
   var $html = $('html');
@@ -1040,16 +1041,6 @@ window.colors = {
       });
     }
   }
-
-  var path = location.pathname.split('/');
-
-  if (path[1] != "login") {
-    var token = Cookies.get('token');
-
-    if (!token) {
-      alert('unauthorized access');
-    }
-  }
 })(window, document, jQuery);
 
 // To use feather svg icons with different sizes
@@ -1107,8 +1098,8 @@ function alertMessage(type, title, message, redirect) {
         confirmButton: 'btn btn-primary'
       },
       buttonsStyling: false
-    }).then( function () {
-      window.location.replace(redirect);
+    }).then(function () {
+      window.location.replace(BASE_URL + redirect);
     });
   } else {
     Swal.fire({
@@ -1135,6 +1126,11 @@ function loadingOverlay() {
       opacity: 0.5
     }
   });
+}
+
+function logout() {
+  Cookies.remove('token');
+  alertMessage('success', 'Pesan', 'Logout Berhasil.', '/login');
 }
 
 // Add validation class to input-group (input group validation fix, currently disabled but will be useful in future)

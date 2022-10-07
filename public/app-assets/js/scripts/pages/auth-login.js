@@ -38,7 +38,7 @@ $(function () {
           },
           success: function (response) {
             Cookies.set('token', response.token, { secure: true, sameSite: 'strict' });
-            alertMessage('success', 'Pesan', response.message, location.origin + '/pages/dashboard');
+            alertMessage('success', 'Pesan', response.message, '/pages/dashboard');
           },
           error: function (request) {
             if (request.responseJSON.error == 400) {

@@ -73,6 +73,7 @@ $routes->group('api', ['filter' => 'authFilter'], function ($routes) {
 $routes->group('api', function ($routes) {
     $routes->group('auth', function ($routes) {
         $routes->post('login', 'Api\ApiAuth::login');
+        $routes->post('token', 'Api\ApiAuth::token');
     });
 });
 
