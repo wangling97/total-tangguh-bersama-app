@@ -8,6 +8,6 @@ class Dashboard extends BaseController
 {
     public function index()
     {
-        echo "Dashboard";
+        return view('pages/dashboard/view');
     }
 }

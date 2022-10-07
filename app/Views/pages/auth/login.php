@@ -15,7 +15,7 @@
     <!-- END: Page CSS-->
 
     <!-- BEGIN: Custom CSS-->
-    <?= link_tag(ASSETS_CSS . '/style.css') ?>
+    <?= link_tag(ASSETS_CSS . '/style.css'); ?>
 
     <!-- END: Custom CSS-->
 

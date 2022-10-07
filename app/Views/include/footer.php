@@ -1,6 +1,8 @@
 <!-- BEGIN: Vendor JS-->
 <?= script_tag(APP_ASSETS_VENDOR . "/js/vendors.min.js") ?>
 
+<?= script_tag(APP_ASSETS_VENDOR . "/js/js-cookie/dist/js.cookie.min.js") ?>
+
 <!-- BEGIN Vendor JS-->
 
 <!-- BEGIN: Page Vendor JS-->

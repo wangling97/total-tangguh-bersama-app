@@ -1040,6 +1040,16 @@ window.colors = {
       });
     }
   }
+
+  var path = location.pathname.split('/');
+
+  if (path[1] != "login") {
+    var token = Cookies.get('token');
+
+    if (!token) {
+      alert('unauthorized access');
+    }
+  }
 })(window, document, jQuery);
 
 // To use feather svg icons with different sizes
@@ -1087,16 +1097,30 @@ if (typeof jQuery.validator === 'function') {
   });
 }
 
-function alertMessage(type, title, message) {
-  Swal.fire({
-    icon: type,
-    title: title,
-    text: message,
-    customClass: {
-      confirmButton: 'btn btn-primary'
-    },
-    buttonsStyling: false
-  });
+function alertMessage(type, title, message, redirect) {
+  if (redirect) {
+    Swal.fire({
+      icon: type,
+      title: title,
+      text: message,
+      customClass: {
+        confirmButton: 'btn btn-primary'
+      },
+      buttonsStyling: false
+    }).then( function () {
+      window.location.replace(redirect);
+    });
+  } else {
+    Swal.fire({
+      icon: type,
+      title: title,
+      text: message,
+      customClass: {
+        confirmButton: 'btn btn-primary'
+      },
+      buttonsStyling: false
+    });
+  }
 }
 
 function loadingOverlay() {

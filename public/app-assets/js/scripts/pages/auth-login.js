@@ -37,10 +37,25 @@ $(function () {
             loadingOverlay();
           },
           success: function (response) {
-            console.info(response);
+            Cookies.set('token', response.token, { secure: true, sameSite: 'strict' });
+            alertMessage('success', 'Pesan', response.message, location.origin + '/pages/dashboard');
           },
           error: function (request) {
-            alertMessage('warning', 'Peringatan', request.responseJSON.messages.error);
+            if (request.responseJSON.error == 400) {
+              if (request.responseJSON.messages.username) {
+                alertMessage('warning', 'Peringatan', request.responseJSON.messages.username);
+                return;
+              }
+
+              if (request.responseJSON.messages.password) {
+                alertMessage('warning', 'Peringatan', request.responseJSON.messages.password);
+                return;
+              }
+            }
+
+            if (request.responseJSON.error == 401) {
+              alertMessage('warning', 'Peringatan', request.responseJSON.messages.error);
+            }
           },
           complete: function () {
             $.unblockUI();
