@@ -92,3 +92,14 @@ define('EVENT_PRIORITY_NORMAL', 100);
  * @deprecated Use \CodeIgniter\Events\Events::PRIORITY_HIGH instead.
  */
 define('EVENT_PRIORITY_HIGH', 10);
+
+// Custom
+define('APP_NAME', 'Total Tangguh Bersama');
+define('APP_SHORT_NAME', 'TTB App');
+
+define('APP_ASSETS_CSS', 'app-assets/css');
+define('APP_ASSETS_JS', 'app-assets/js');
+define('APP_ASSETS_IMG', 'app-assets/images');
+define('APP_ASSETS_VENDOR', 'app-assets/vendors');
+
+define('ASSETS_CSS', 'assets/css');

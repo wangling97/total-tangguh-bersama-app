@@ -17,7 +17,7 @@ if (is_file(SYSTEMPATH . 'Config/Routes.php')) {
  * --------------------------------------------------------------------
  */
 $routes->setDefaultNamespace('App\Controllers');
-$routes->setDefaultController('Home');
+$routes->setDefaultController('Dashboard');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
@@ -35,7 +35,14 @@ $routes->set404Override();
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
+$routes->get('/', 'Pages\Dashboard::index');
+
+$routes->get('login', 'Pages\Auth::login');
+
+$routes->group('pages', function ($routes) {
+    $routes->get('dashboard', 'Pages\Dashboard::index');
+});
+
 
 // API
 $routes->group('api', ['filter' => 'authFilter'], function ($routes) {
@@ -66,6 +73,7 @@ $routes->group('api', ['filter' => 'authFilter'], function ($routes) {
 $routes->group('api', function ($routes) {
     $routes->group('auth', function ($routes) {
         $routes->post('login', 'Api\ApiAuth::login');
+        $routes->post('token', 'Api\ApiAuth::token');
     });
 });
 

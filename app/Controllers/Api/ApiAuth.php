@@ -5,14 +5,19 @@ namespace App\Controllers\Api;
 use App\Controllers\BaseController;
 use App\Models\Api\ApiPenggunaModel;
 use \Firebase\JWT\JWT;
+use \Firebase\JWT\Key;
 
 class ApiAuth extends BaseController
 {
     private $ApiPenggunaModel;
+    private $jwt;
+    private $key;
     
     public function __construct()
     {
         $this->ApiPenggunaModel = new ApiPenggunaModel();
+        $this->jwt = new JWT();
+        $this->key = env('JWT_SECRET');
     }
     
     public function login()
@@ -42,7 +47,6 @@ class ApiAuth extends BaseController
             return $this->failUnauthorized('Username atau Password Salah.');
         }
 
-        $key = env('JWT_SECRET');
         $iat = time(); // current timestamp value
         $exp = $iat + 3600;
 
@@ -55,8 +59,7 @@ class ApiAuth extends BaseController
         );
 
         try {
-            $jwt = new JWT();
-            $token = $jwt->encode($payload, $key, 'HS256');
+            $token = $this->jwt->encode($payload, $this->key, 'HS256');
 
             $response = [
                 'message' => 'Login Berhasil.',
@@ -66,6 +69,23 @@ class ApiAuth extends BaseController
             return $this->respond($response, 200);
         } catch (\Exception $ex) {
             $this->fail($ex->getMessage());
+        }
+    }
+
+    public function token()
+    {
+        $token = $this->request->getServer("HTTP_AUTHORIZATION");
+        
+        // check if token is null or empty
+        if ($token === null) {
+            return $this->failUnauthorized('Access denied');
+        }
+
+        try {
+            $this->jwt->decode($token, new Key($this->key, 'HS256'));
+            return $this->respond("Authorized", 200);
+        } catch (\Exception $ex) {
+            return $this->failUnauthorized($ex->getMessage());
         }
     }
 }
