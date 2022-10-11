@@ -1,7 +1,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
-<title>Login Page - <?= APP_NAME; ?></title>
+<title><?= $title; ?> - <?= APP_NAME; ?></title>
 <?= link_tag(APP_ASSETS_IMG . '/ico/favicon.ico', 'apple-touch-icon') ?>
 
 <?= link_tag(APP_ASSETS_IMG . '/ico/favicon.ico', 'shortcut icon') ?>
@@ -38,13 +38,15 @@
 
 <script>
     const BASE_URL = location.origin;
-
     const PATH = location.pathname.split('/');
+    const TOKEN = Cookies.get('token');
+    const THEME = Cookies.get('theme');
+
+    var user_nama_lengkap = "";
+    var user_jabatan = "";
 
     if (PATH[1] != "login") {
-        var token = Cookies.get('token');
-
-        if (!token) {
+        if (!TOKEN) {
             Cookies.set('flash_message', 'Silahkan login terlebih dahulu!');
             window.location.replace(BASE_URL + "/login");
         } else {
@@ -53,13 +55,29 @@
                 url: "http://localhost:3000/api/auth/token",
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'Authorization': token
+                    'Authorization': TOKEN
+                },
+                success: function(response) {
+                    if (response.message == "Refresh") {
+                        Cookies.set('token', response.token);
+                    } else {
+                        user_nama_lengkap = response.pengguna.nama_depan;
+                        user_jabatan = response.pengguna.jabatan;
+
+                        if (response.pengguna.nama_belakang) {
+                            user_nama_lengkap += " " + response.pengguna.nama_belakang;
+                        }
+                    }
                 },
                 error: function(request, status) {
                     Cookies.set('flash_message', request.responseJSON);
                     window.location.replace(BASE_URL + "/login");
                 }
             });
+        }
+    } else {
+        if (TOKEN) {
+            window.location.replace(BASE_URL);
         }
     }
 
@@ -68,5 +86,29 @@
     if (flash_message) {
         alert(flash_message);
         Cookies.remove('flash_message');
+    }
+
+    if (THEME) {
+        if (THEME == 'light') {
+            $("html").addClass("light-layout");
+        } else {
+            $("html").addClass("dark-layout");
+        }
+    } else {
+        Cookies.set('theme', 'light');
+
+        $("html").addClass("light-layout");
+    }
+
+    function changeTheme() {
+        if (THEME) {
+            if (THEME == 'light') {
+                Cookies.set('theme', 'dark');
+            } else {
+                Cookies.set('theme', 'light');
+            }
+        } else {
+            Cookies.set('theme', 'light');
+        }
     }
 </script>
