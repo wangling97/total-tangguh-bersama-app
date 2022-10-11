@@ -8,32 +8,49 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
 
+<!-- BEGIN: Vendor CSS-->
 <?= link_tag(APP_ASSETS_VENDOR . '/css/vendors.min.css'); ?>
-
 <?= link_tag(APP_ASSETS_VENDOR . '/css/animate/animate.min.css'); ?>
-
 <?= link_tag(APP_ASSETS_VENDOR . '/css/extensions/sweetalert2.min.css'); ?>
 
+<?php if ($title == 'Data Admin') : ?>
+    <?= link_tag(APP_ASSETS_VENDOR . '/css/tables/datatable/dataTables.bootstrap5.min.css'); ?>
+    <?= link_tag(APP_ASSETS_VENDOR . '/css/tables/datatable/responsive.bootstrap5.min.css'); ?>
+    <?= link_tag(APP_ASSETS_VENDOR . '/css/tables/datatable/buttons.bootstrap5.min.css'); ?>
+<?php endif; ?>
+<!-- END: Vendor CSS-->
+
+<!-- BEGIN: Theme CSS-->
 <?= link_tag(APP_ASSETS_CSS . '/bootstrap.css'); ?>
-
 <?= link_tag(APP_ASSETS_CSS . '/bootstrap-extended.css'); ?>
-
 <?= link_tag(APP_ASSETS_CSS . '/colors.css'); ?>
-
 <?= link_tag(APP_ASSETS_CSS . '/components.css'); ?>
-
 <?= link_tag(APP_ASSETS_CSS . '/themes/dark-layout.css'); ?>
-
 <?= link_tag(APP_ASSETS_CSS . '/themes/bordered-layout.css'); ?>
-
 <?= link_tag(APP_ASSETS_CSS . '/themes/semi-dark-layout.css'); ?>
 
+<!-- END: Theme CSS-->
+
+<!-- BEGIN: Page CSS-->
+<?= link_tag(APP_ASSETS_CSS . '/core/menu/menu-types/vertical-menu.css'); ?>
+
+<?php if ($title == 'Login' || $title == 'Data Admin') : ?>
+    <?= link_tag(APP_ASSETS_CSS . '/plugins/forms/form-validation.css'); ?>
+<?php endif; ?>
+
+<?php if ($title == 'Login') : ?>
+    <?= link_tag(APP_ASSETS_CSS . '/pages/authentication.css'); ?>
+<?php endif; ?>
+<!-- END: Page CSS-->
+
+<!-- BEGIN: Custom CSS-->
+<?= link_tag(ASSETS_CSS . '/style.css'); ?>
+
+<!-- END: Custom CSS-->
+
 <?= script_tag(APP_ASSETS_VENDOR . "/js/jquery/jquery.min.js") ?>
-
 <?= script_tag(APP_ASSETS_VENDOR . "/js/js-cookie/dist/js.cookie.min.js") ?>
-
 <?= script_tag(APP_ASSETS_VENDOR . "/js/extensions/sweetalert2.all.min.js") ?>
-
 <?= script_tag(APP_ASSETS_VENDOR . "/js/extensions/polyfill.min.js") ?>
 
 <script>

@@ -41,6 +41,10 @@ $routes->get('login', 'Pages\Auth::login');
 
 $routes->group('pages', function ($routes) {
     $routes->get('dashboard', 'Pages\Dashboard::index');
+
+    $routes->group('admin', function ($routes) {
+        $routes->get('/', 'Pages\Admin::index');
+    });
 });
 
 

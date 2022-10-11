@@ -4,17 +4,6 @@
 
 <head>
     <?= view('include/header'); ?>
-
-    <!-- BEGIN: Page CSS-->
-    <?= link_tag(APP_ASSETS_CSS . '/core/menu/menu-types/vertical-menu.css'); ?>
-
-    <!-- END: Page CSS-->
-
-    <!-- BEGIN: Custom CSS-->
-    <?= link_tag(ASSETS_CSS . '/style.css'); ?>
-
-    <!-- END: Custom CSS-->
-
 </head>
 <!-- END: Head-->
 
@@ -60,12 +49,12 @@
         <div class="shadow-bottom"></div>
         <div class="main-menu-content">
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-                <li class="nav-item <?= (strtolower($title) == 'dashboard') ? 'active' : ''; ?>">
+                <li class="nav-item <?= ($title == 'Dashboard') ? 'active' : ''; ?>">
                     <a class="d-flex align-items-center" href="<?= base_url('pages/dashboard'); ?>">
                         <i data-feather="home"></i><span class="menu-title text-truncate" data-i18n="Dashboard">Dashboard</span>
                     </a>
                 </li>
-                <li class="nav-item <?= (strtolower($title) == 'admin') ? 'active' : ''; ?>">
+                <li class="nav-item <?= ($title == 'Data Admin') ? 'active' : ''; ?>">
                     <a class="d-flex align-items-center" href="<?= base_url('pages/admin'); ?>">
                         <i data-feather="users"></i><span class="menu-title text-truncate" data-i18n="Data Admin">Data Admin</span>
                     </a>
@@ -88,8 +77,17 @@
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item">
-                                        Dashboard
+                                        <?php if ($title == 'Dashboard') : ?>
+                                            Dashboard
+                                        <?php else: ?>
+                                            <a href="<?= base_url('pages/dashboard'); ?>">Dashboard</a>
+                                        <?php endif; ?>
                                     </li>
+                                    <?php if ($title != 'Dashboard') : ?>
+                                        <li class="breadcrumb-item">
+                                            <?= $title; ?>
+                                        </li>
+                                    <?php endif; ?>
                                 </ol>
                             </div>
                         </div>
@@ -115,9 +113,6 @@
     <!-- END: Footer-->
 
     <?= view('include/footer'); ?>
-
-    <!-- BEGIN: Page JS-->
-    <!-- END: Page JS-->
 
     <script>
         $(window).on('load', function() {

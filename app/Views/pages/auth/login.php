@@ -4,21 +4,6 @@
 
 <head>
     <?= view('include/header'); ?>
-
-    <!-- BEGIN: Page CSS-->
-    <?= link_tag(APP_ASSETS_CSS . '/core/menu/menu-types/vertical-menu.css'); ?>
-
-    <?= link_tag(APP_ASSETS_CSS . '/plugins/forms/form-validation.css'); ?>
-
-    <?= link_tag(APP_ASSETS_CSS . '/pages/authentication.css'); ?>
-
-    <!-- END: Page CSS-->
-
-    <!-- BEGIN: Custom CSS-->
-    <?= link_tag(ASSETS_CSS . '/style.css'); ?>
-
-    <!-- END: Custom CSS-->
-
 </head>
 <!-- END: Head-->
 
@@ -102,7 +87,6 @@
 
     <!-- BEGIN: Page JS-->
     <?= script_tag(APP_ASSETS_JS . "/scripts/pages/auth-login.js") ?>
-
     <!-- END: Page JS-->
 
     <script>
