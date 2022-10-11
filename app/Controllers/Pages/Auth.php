@@ -9,6 +9,10 @@ class Auth extends BaseController
 {
     public function login()
     {
-        return view("pages/auth/login");
+        $data = [
+            "title" => "Login"
+        ];
+
+        return view("pages/auth/login", $data);
     }
 }

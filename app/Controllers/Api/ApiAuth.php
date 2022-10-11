@@ -4,6 +4,7 @@ namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
 use App\Models\Api\ApiPenggunaModel;
+use Firebase\JWT\ExpiredException;
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
 
@@ -12,14 +13,14 @@ class ApiAuth extends BaseController
     private $ApiPenggunaModel;
     private $jwt;
     private $key;
-    
+
     public function __construct()
     {
         $this->ApiPenggunaModel = new ApiPenggunaModel();
         $this->jwt = new JWT();
         $this->key = env('JWT_SECRET');
     }
-    
+
     public function login()
     {
         $jsonData = [
@@ -31,9 +32,9 @@ class ApiAuth extends BaseController
         $this->validation->setRule('password', 'Password', 'required');
         $this->validation->run($jsonData);
 
-        if($this->validation->getErrors()) {
+        if ($this->validation->getErrors()) {
             return $this->failValidationErrors($this->validation->getErrors());
-        }   
+        }
 
         $dataPengguna = $this->ApiPenggunaModel
             ->where('username', $jsonData['username'])
@@ -65,7 +66,7 @@ class ApiAuth extends BaseController
                 'message' => 'Login Berhasil.',
                 'token' => $token
             ];
-             
+
             return $this->respond($response, 200);
         } catch (\Exception $ex) {
             $this->fail($ex->getMessage());
@@ -75,15 +76,39 @@ class ApiAuth extends BaseController
     public function token()
     {
         $token = $this->request->getServer("HTTP_AUTHORIZATION");
-        
+
         // check if token is null or empty
         if ($token === null) {
             return $this->failUnauthorized('Access denied');
         }
 
         try {
-            $this->jwt->decode($token, new Key($this->key, 'HS256'));
-            return $this->respond("Authorized", 200);
+            $decoded = $this->jwt->decode($token, new Key($this->key, 'HS256'));
+            return $this->respond([
+                'message' => 'Authorized',
+                'pengguna' => $decoded->pengguna
+            ], 200);
+        } catch (ExpiredException $e) {
+            list($header, $payload, $signature) = explode(".", $token);
+            $payload = json_decode(base64_decode($payload));
+
+            $iat = time(); // current timestamp value
+            $exp = $iat + 3600;
+
+            $refreshPayload = array(
+                "iat" => $iat, // Time the JWT issued at
+                "exp" => $exp, // Expiration time of token
+                "pengguna" => $payload->pengguna,
+            );
+
+            $token = $this->jwt->encode($refreshPayload, $this->key, 'HS256');
+
+            $response = [
+                'message' => 'Refresh',
+                'token' => $token
+            ];
+
+            return $this->respond($response, 200);
         } catch (\Exception $ex) {
             return $this->failUnauthorized($ex->getMessage());
         }

@@ -1129,8 +1129,16 @@ function loadingOverlay() {
 }
 
 function logout() {
-  Cookies.remove('token');
-  alertMessage('success', 'Pesan', 'Logout Berhasil.', '/login');
+  Swal.fire({
+    title: 'Anda akan keluar dari sistem?',
+    showCancelButton: true,
+    confirmButtonText: 'Logout'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Cookies.remove('token');
+      alertMessage('success', 'Pesan', 'Logout Berhasil.', '/login');
+    }
+  });
 }
 
 // Add validation class to input-group (input group validation fix, currently disabled but will be useful in future)
